@@ -5,6 +5,8 @@ defmodule FlyWeb.AppLive.Show do
   alias Fly.Client
   alias FlyWeb.Components.HeaderBreadcrumbs
 
+  @interval 5000
+
   @impl true
   def mount(%{"name" => name}, session, socket) do
     socket =
@@ -19,6 +21,7 @@ defmodule FlyWeb.AppLive.Show do
 
     # Only make the API call if the websocket is setup. Not on initial render.
     if connected?(socket) do
+      start_timer(@interval)
       {:ok, fetch_app(socket)}
     else
       {:ok, socket}
@@ -69,5 +72,14 @@ defmodule FlyWeb.AppLive.Show do
 
   def preview_url(app) do
     "https://#{app["name"]}.fly.dev"
+  end
+
+  @impl true
+  def handle_info(:clock_tick, socket) do
+    {:noreply, fetch_app(socket)}
+  end
+
+  defp start_timer(interval) do
+    :timer.send_interval(interval, self(), :clock_tick)
   end
 end
