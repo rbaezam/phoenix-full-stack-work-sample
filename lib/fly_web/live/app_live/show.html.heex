@@ -156,18 +156,10 @@
                               <tbody class="bg-white divide-y divide-gray-200">
                                 <tr>
                                   <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                    Name
+                                    ID
                                   </td>
                                   <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                    <%= @app["name"] %>
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                    Owner
-                                  </td>
-                                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                    <%= @app["organization"]["slug"] %>
+                                    <%= @app["deploymentStatus"]["id"] %>
                                   </td>
                                 </tr>
                                 <tr>
@@ -175,7 +167,7 @@
                                     Version
                                   </td>
                                   <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                    <%= @app["version"] %>
+                                    <%= @app["deploymentStatus"]["version"] %>
                                   </td>
                                 </tr>
                                 <tr>
@@ -183,15 +175,25 @@
                                     Status
                                   </td>
                                   <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                    <%= @app["status"] %>
+                                    <%= @app["deploymentStatus"]["status"] %>
                                   </td>
                                 </tr>
                                 <tr>
                                   <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                    Hostname
+                                    Description
                                   </td>
                                   <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                    <%= @app["hostname"] %>
+                                    <%= @app["deploymentStatus"]["description"] %>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                    Instances
+                                  </td>
+                                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                    <%= if @app["deploymentStatus"] do %>
+                                      <%= @app["deploymentStatus"]["desiredCount"] %> desired, <%= @app["deploymentStatus"]["placedCount"] %> placed, <%= @app["deploymentStatus"]["healthyCount"] %> healthy, <%= @app["deploymentStatus"]["unhealthyCount"] %> unhealthy
+                                    <% end %>
                                   </td>
                                 </tr>
                               </tbody>
@@ -260,29 +262,33 @@
                               <tbody class="bg-white divide-y divide-gray-200">
                                 <%= for instance <- @app["allocations"] do %>
                                   <tr>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                    <td class="px-6 py-4 whitespace-nowrap text-xs font-medium text-gray-900">
                                       <%= instance["id"] %>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                    <td class="px-6 py-4 whitespace-nowrap text-xs font-medium text-gray-900">
                                       <%= instance["taskName"] %>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                    <td class="px-6 py-4 whitespace-nowrap text-xs font-medium text-gray-900">
+                                      <%= instance["version"] %>
+                                    </td>
+
+                                    <td class="px-6 py-4 whitespace-nowrap text-xs font-medium text-gray-900">
                                       <%= instance["region"] %>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                    <td class="px-6 py-4 whitespace-nowrap text-xs font-medium text-gray-900">
                                       <%= instance["desiredStatus"] %>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                    <td class="px-6 py-4 whitespace-nowrap text-xs font-medium text-gray-900">
                                       <%= instance["status"] %>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                    <td class="px-6 py-4 whitespace-nowrap text-xs font-medium text-gray-900">
                                       <%= instance["totalCheckCount"] %> total, <%= instance["passingCheckCount"] %> passing
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                    <td class="px-6 py-4 whitespace-nowrap text-xs font-medium text-gray-900">
                                       <%= instance["restarts"] %>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                      <%= instance["createdAt"] %>
+                                    <td class="px-6 py-4 whitespace-nowrap text-xs font-medium text-gray-900">
+                                      <%= Timex.from_now(Timex.parse(instance["createdAt"], "{RFC3339z}") |> elem(1)) %>
                                     </td>
                                   </tr>
                                 <% end %>
