@@ -194,6 +194,7 @@ defmodule Fly.Client do
             version
             description
             desiredCount
+            placedCount
             healthyCount
             unhealthyCount
           }
